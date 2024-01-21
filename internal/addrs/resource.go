@@ -457,6 +457,9 @@ func (v ConfigResource) CheckableKind() CheckableKind {
 	return CheckableResource
 }
 
+func (r ConfigResource) configRemovableSigil() {
+}
+
 type configResourceKey string
 
 func (k configResourceKey) uniqueKeySigil() {}

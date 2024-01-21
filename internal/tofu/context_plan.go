@@ -664,9 +664,18 @@ func (c *Context) planWalk(config *configs.Config, prevRunState *states.State, o
 }
 
 func (c *Context) planGraph(config *configs.Config, prevRunState *states.State, opts *PlanOpts) (*Graph, walkOperation, tfdiags.Diagnostics) {
+	var diags tfdiags.Diagnostics
+	var graph *Graph
+
+	endpointsToForget, forgetDiags := refactoring.GetEndpointsToForget(config)
+	diags = diags.Append(forgetDiags)
+	if diags.HasErrors() {
+		return nil, walkPlan, diags
+	}
+
 	switch mode := opts.Mode; mode {
 	case plans.NormalMode:
-		graph, diags := (&PlanGraphBuilder{
+		graph, diags = (&PlanGraphBuilder{
 			Config:             config,
 			State:              prevRunState,
 			RootVariableValues: opts.SetVariables,
@@ -679,10 +688,11 @@ func (c *Context) planGraph(config *configs.Config, prevRunState *states.State, 
 			ExternalReferences: opts.ExternalReferences,
 			ImportTargets:      opts.ImportTargets,
 			GenerateConfigPath: opts.GenerateConfigPath,
+			EndpointsToForget:  endpointsToForget,
 		}).Build(addrs.RootModuleInstance)
 		return graph, walkPlan, diags
 	case plans.RefreshOnlyMode:
-		graph, diags := (&PlanGraphBuilder{
+		graph, diags = (&PlanGraphBuilder{
 			Config:             config,
 			State:              prevRunState,
 			RootVariableValues: opts.SetVariables,
@@ -695,7 +705,7 @@ func (c *Context) planGraph(config *configs.Config, prevRunState *states.State, 
 		}).Build(addrs.RootModuleInstance)
 		return graph, walkPlan, diags
 	case plans.DestroyMode:
-		graph, diags := (&PlanGraphBuilder{
+		graph, diags = (&PlanGraphBuilder{
 			Config:             config,
 			State:              prevRunState,
 			RootVariableValues: opts.SetVariables,
@@ -703,6 +713,7 @@ func (c *Context) planGraph(config *configs.Config, prevRunState *states.State, 
 			Targets:            opts.Targets,
 			skipRefresh:        opts.SkipRefresh,
 			Operation:          walkPlanDestroy,
+			EndpointsToForget:  endpointsToForget, //TODO: do we want to forget on destroy? I believe we do
 		}).Build(addrs.RootModuleInstance)
 		return graph, walkPlanDestroy, diags
 	default:

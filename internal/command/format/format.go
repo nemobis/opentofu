@@ -32,6 +32,8 @@ func DiffActionSymbol(action plans.Action) string {
 		return "  [yellow]~[reset]"
 	case plans.NoOp:
 		return "   "
+	case plans.Forget:
+		return "  [red].[reset]"
 	default:
 		return "  ?"
 	}

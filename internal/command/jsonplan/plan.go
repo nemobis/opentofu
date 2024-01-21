@@ -839,6 +839,8 @@ func actionString(action string) []string {
 		return []string{"read"}
 	case action == "DeleteThenCreate":
 		return []string{"delete", "create"}
+	case action == "Forget":
+		return []string{"forget"}
 	default:
 		return []string{action}
 	}
@@ -868,6 +870,8 @@ func UnmarshalActions(actions []string) plans.Action {
 			return plans.Read
 		case "no-op":
 			return plans.NoOp
+		case "forget":
+			return plans.Forget
 		}
 	}
 

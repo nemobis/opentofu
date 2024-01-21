@@ -85,6 +85,7 @@ const (
 	Action_DELETE             Action = 5
 	Action_DELETE_THEN_CREATE Action = 6
 	Action_CREATE_THEN_DELETE Action = 7
+	Action_FORGET             Action = 8
 )
 
 // Enum value maps for Action.
@@ -97,6 +98,7 @@ var (
 		5: "DELETE",
 		6: "DELETE_THEN_CREATE",
 		7: "CREATE_THEN_DELETE",
+		8: "FORGET",
 	}
 	Action_value = map[string]int32{
 		"NOOP":               0,
@@ -106,6 +108,7 @@ var (
 		"DELETE":             5,
 		"DELETE_THEN_CREATE": 6,
 		"CREATE_THEN_DELETE": 7,
+		"FORGET":             8,
 	}
 )
 
