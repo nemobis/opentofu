@@ -70,6 +70,7 @@ const (
 	ActionReplace ChangeAction = "replace"
 	ActionDelete  ChangeAction = "delete"
 	ActionImport  ChangeAction = "import"
+	ActionForget  ChangeAction = "forget"
 )
 
 func changeAction(action plans.Action) ChangeAction {
@@ -86,6 +87,8 @@ func changeAction(action plans.Action) ChangeAction {
 		return ActionReplace
 	case plans.Delete:
 		return ActionDelete
+	case plans.Forget:
+		return ActionForget
 	default:
 		return ActionNoOp
 	}
